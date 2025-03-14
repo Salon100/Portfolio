@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salon Sodari</title>
+  <link href="https://fonts.googleapis.com/css?family=Audiowide&display=swap" rel="stylesheet">
+  <link rel="icon" href="Salon.jpg" type="image/x-icon"> <!-- Favicon added here -->
+  <style>
+    /* CSS Variables for Colors & Fonts */
+    :root {
+      --neutral-color: #808080;    /* Neutral Gray */
+      --secondary-color: #9d00ff;  /* Neon Purple */
+      --accent-color: #00ffff;     /* Neon Cyan */
+      --bg-color: #0a0a0a;         /* Dark Background */
+      --text-color: #ffffff;
+    }
+    
+    /* Reset & Global Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Audiowide', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Fullscreen Starfield Canvas */
+    canvas#starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background: var(--bg-color);
+    }
+    
+    /* Overlay Content Container */
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header & Navigation */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(0, 0, 0, 0.6);
+      position: fixed;
+      width: 100%;
+      z-index: 2;
+    }
+    header .logo {
+      font-size: 2rem;
+      color: var(--neutral-color);
+    }
+    header nav a {
+      margin: 0 15px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    header nav a:hover { color: var(--accent-color); }
+    
+    /* Hero Section with Typewriter Effect */
+    #hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+    #hero h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    #hero p {
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+    }
+    .typewriter {
+      display: inline-block;
+      border-right: 2px solid var(--accent-color);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    
+    /* About Section */
+    #about {
+      padding: 100px 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    #about h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+    }
+    #about .about-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-direction: column;
+      text-align: center;
+    }
+    #about .about-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--neutral-color);
+    }
+    #about p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* Projects Section with Animated Cards */
+    #projects {
+      padding: 100px 20px;
+      text-align: center;
+    }
+    #projects h2 {
+      font-size: 3rem;
+      margin-bottom: 50px;
+      color: var(--secondary-color);
+    }
+    .projects-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .project-card {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--secondary-color);
+      border-radius: 10px;
+      overflow: hidden;
+      width: 300px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .project-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--accent-color);
+    }
+    .project-card img {
+      width: 100%;
+      display: block;
+    }
+    .project-card .card-content {
+      padding: 15px;
+    }
+    .project-card h3 {
+      margin: 10px 0;
+      font-size: 1.5rem;
+      color: var(--neutral-color);
+    }
+    .project-card p {
+      font-size: 1rem;
+    }
+    
+    /* Contact Section */
+    #contact {
+      padding: 100px 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    #contact h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 15px;
+      border: 2px solid var(--secondary-color);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+    .contact-form button {
+      padding: 15px;
+      border: none;
+      background: var(--neutral-color);
+      color: var(--bg-color);
+      font-size: 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .contact-form button:hover {
+      background: var(--accent-color);
+    }
+    
+    /* Footer */
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas Starfield Background -->
+  <canvas id="starfield"></canvas>
+  
+  <!-- Overlay Content -->
+  <div class="content">
+    <!-- Header -->
+    <header>
+      <div class="logo">Salon Sodari</div>
+      <nav>
+        <a href="#hero">Home</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="hero">
+      <h1>Greetings, Explorer</h1>
+      <p class="typewriter"></p>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+      <h2>About Me</h2>
+      <div class="about-container">
+        <img src="Salon.jpg" alt="Salon Sodari" class="about-img" />
+        <p>
+          I am Salon Sodari, a digital pioneer blending art with technology. My work explores the boundaries of design and code to create futuristic experiences that defy expectations. I specialize in graphic design, web design, and interactive media. I am passionate about creating digital art that pushes the limits of what's possible.
+        </p>
+      </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <img src="Sanil.png" alt="Project One">
+          <div class="card-content">
+            <h3>Sanil Arts</h3>
+            <p>A groundbreaking experiment in interactive design and digital art.</p>
+            <a href="https://salon100.github.io/Sanil-Arts/" target="_blank" class="button">View Project</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="Cake Shop.jpg" alt="Project Two">
+          <div class="card-content">
+            <h3>Online Cake Shop</h3>
+            <p>An innovative fusion of code and creativity that pushes the limits.</p>
+            <a href="https://salon100.github.io/Online-Cake-Shop/" target="_blank" class="button">View Project</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form class="contact-form" action="sodarisalon26@gmail.com" method="POST">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 Salon Sodari. All rights reserved.</p>
+    </footer>
+  </div>
+  
+  <script>
+    /***** STARFIELD ANIMATION *****/
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const numStars = 200;
+    
+    // Initialize canvas dimensions
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    // Create star objects with random positions and opacity
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width - canvas.width / 2,
+          y: Math.random() * canvas.height - canvas.height / 2,
+          z: Math.random() * canvas.width,
+          o: Math.random()
+        });
+      }
+    }
+    
+    // Animate stars by moving them toward the viewer
+    function animateStars() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.z -= 2;
+        if (star.z <= 0) star.z = canvas.width;
+        const k = 128.0 / star.z;
+        const px = star.x * k + canvas.width / 2;
+        const py = star.y * k + canvas.height / 2;
+        const r = k;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.o})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(animateStars);
+    }
+    
+    window.addEventListener('resize', () => {
+      initCanvas();
+      createStars();
+    });
+    
+    initCanvas();
+    createStars();
+    animateStars();
+    
+    /***** TYPEWRITER EFFECT *****/
+    const typewriterElement = document.querySelector('.typewriter');
+    const typewriterText = "Welcome to the Future of Design...";
+    let index = 0;
+    
+    function typeWriter() {
+      if (index < typewriterText.length) {
+        typewriterElement.textContent += typewriterText.charAt(index);
+        index++;
+        setTimeout(typeWriter, 100);
+      }
+    }
+    typeWriter();
+  </script>
+</body>
+</html>
